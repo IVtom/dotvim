@@ -1,9 +1,18 @@
 runtime bundle/vim-pathogen/autoload/pathogen.vim
 call pathogen#infect()
 call pathogen#helptags()
+syntax on
 filetype on
-au BufNewFile,BufRead *.py,*.pyw setf python
+filetype plugin indent on "enable loading indent file for filetype
+au FileType python set omnifunc=pythoncomplete#Complete
+let g:SuperTabDefaultCompletionType = "context"
 
+set completeopt=menuone,longest,preview
+au BufNewFile,BufRead *.py,*.pyw setf python
+let g:pyflakes_use_quickfix = 0
+let g:pep8_map='<leader>8'
+" File Browser
+map <leader>n :NERDTreeToggle<CR>
 "hide menu and ToolBar
 set guioptions-=m
 set guioptions-=T
@@ -12,8 +21,8 @@ set guioptions-=r
 
 autocmd BufRead *.py set makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\"
 autocmd BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
-autocmd BufRead *.py nmap <F5> :!python %<CR>
-autocmd BufRead *.py nmap <F6> :make<CR>
+autocmd BufRead *.py nmap <F8> :!python %<CR>
+autocmd BufRead *.py nmap <F9> :make<CR>
 "autocmd BufRead *.py copen "如果是py文件，则同时打开编译信窗口
 
 "let g:jedi_location='D:\Program Files (x86)\Vim\vim73\ftplugin\pydiction\complete-dict'
@@ -22,7 +31,7 @@ autocmd BufRead *.py nmap <F6> :make<CR>
 set termencoding=utf-8
 set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 "增加多语言编译
-map <F5> :call CompileRunGcc()<CR>
+map <F8> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
     exec "w"
     if &filetype == 'c'
@@ -39,7 +48,7 @@ func! CompileRunGcc()
     endif
 endfunc
 "C,C++μ?μ÷ê?
-map <F8> :call Rungdb()<CR>
+map <F9> :call Rungdb()<CR>
 func! Rungdb()
     exec "w"
     exec "!g++ % -g -o %<"
@@ -65,6 +74,20 @@ map <c-j> <c-w>j
 map <c-k> <c-w>k
 map <c-l> <c-w>l
 map <c-h> <c-w>h
+map <leader>td <Plug>TaskList
+map <leader>g :GundoToggle<CR>
+map <leader>j :RopeGotoDefinition<CR>
+map <leader>r :RopeRename<CR>
+nmap <leader>a <Esc>:Ack!
+set statusline =%{fugitive#statusline()}
+" Execute the tests
+nmap <silent><Leader>tf <Esc>:Pytest file<CR>
+nmap <silent><Leader>tc <Esc>:Pytest class<CR>
+nmap <silent><Leader>tm <Esc>:Pytest method<CR>
+" cycle through test errors
+nmap <silent><Leader>tn <Esc>:Pytest next<CR>
+nmap <silent><Leader>tp <Esc>:Pytest previous<CR>
+nmap <silent><Leader>te <Esc>:Pytest error<CR>
 
 set diffexpr=MyDiff()
 function MyDiff()
